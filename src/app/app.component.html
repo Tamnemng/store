@@ -126,9 +126,29 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzSpan]="6">Image URL</nz-form-label>
-          <nz-form-control [nzSpan]="16" nzErrorTip="Please input image URL">
-            <input nz-input formControlName="image" placeholder="Image URL" />
+          <nz-form-label [nzSpan]="6">Image</nz-form-label>
+          <nz-form-control [nzSpan]="16" nzErrorTip="Please select an image">
+            <nz-upload
+              nzListType="picture-card"
+              [(nzFileList)]="fileList"
+              [nzShowButton]="fileList.length < 1"
+              [nzPreview]="handlePreview"
+              [nzBeforeUpload]="beforeUpload"
+            >
+              <div>
+                <div style="margin-top: 8px">Upload</div>
+              </div>
+            </nz-upload>
+            <nz-modal
+              [nzVisible]="previewVisible"
+              [nzContent]="modalContent"
+              [nzFooter]="null"
+              (nzOnCancel)="previewVisible = false"
+            >
+              <ng-template #modalContent>
+                <img [src]="previewImage" style="width: 100%" />
+              </ng-template>
+            </nz-modal>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
