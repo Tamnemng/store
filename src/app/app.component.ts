@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NgModule } from '@angular/core';
@@ -36,10 +37,8 @@ import { Service } from '../services/services';
 import { Observable } from 'rxjs';
 import { Category, Product } from '../services/model';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzUploadFile, NzUploadModule } from 'ng-zorro-antd/upload';
-import { NzIconModule } from 'ng-zorro-antd/icon';
+import { DomSanitizer } from '@angular/platform-browser';
 const NzModules = [
-  NzUploadModule,
   NzCollapseModule,
   NzIconModule,
   NzDividerModule,
@@ -81,20 +80,12 @@ const categoryMapping: { [key: number]: number } = {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterOutlet,
-    NzLayoutModule,
-    NzMenuModule,
-    ...NzModules],
+  imports: [CommonModule, RouterOutlet, NzIconModule, NzLayoutModule, NzMenuModule, ...NzModules],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   providers: [Store, Service]
 })
 export class AppComponent implements OnInit {
-  fileList: NzUploadFile[] = [];
-  previewVisible = false;
-  previewImage: string | undefined = '';
   imageUrl: string | null = null;
   imageName: string = '';
   selectedCategory: number = 0;
@@ -107,31 +98,16 @@ export class AppComponent implements OnInit {
   productLoading$: Observable<boolean>;
   productForm: FormGroup;
 
-  handlePreview = async (file: NzUploadFile): Promise<void> => {
-    if (!file.url && !file['preview']) {
-      file['preview'] = await this.convertToBase64(file.originFileObj!);
-    }
-    this.previewImage = file.url || file['preview'];
-    this.previewVisible = true;
-  };
-
-  beforeUpload = (file: NzUploadFile): boolean => {
-    this.fileList = [file];
-    this.convertToBase64(file.originFileObj!).then(base64 => {
-      this.productForm.patchValue({ image: base64 });
-    });
-    return false;
-  };
-
   async onFileSelected(event: Event): Promise<void> {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
-      const base64 = await this.convertToBase64(file);
-      this.previewImage = base64;
-      this.productForm.patchValue({ image: base64 });
       this.imageName = file.name;
+      this.imageUrl = URL.createObjectURL(file); // Tạo URL để hiển thị ảnh
+      const base64 = await this.convertToBase64(file); // Chuyển đổi ảnh sang Base64
+      this.productForm.patchValue({ image: base64 }); // Lưu Base64 vào form
     }
   }
+  
   
   private convertToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -203,6 +179,7 @@ export class AppComponent implements OnInit {
             category: product.product_category_id.toString()
           });
           this.drawerVisible = true;
+          this.imageUrl = product.image;
         }
       });
     } catch (error) {
@@ -213,8 +190,6 @@ export class AppComponent implements OnInit {
 
   closeDrawer(): void {
     this.drawerVisible = false;
-    this.previewImage = undefined;
-    this.imageName = '';
   }
 
   // In your component

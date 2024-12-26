@@ -128,29 +128,25 @@
         <nz-form-item>
           <nz-form-label [nzSpan]="6">Image</nz-form-label>
           <nz-form-control [nzSpan]="16" nzErrorTip="Please select an image">
-            <nz-upload
-              nzListType="picture-card"
-              [(nzFileList)]="fileList"
-              [nzShowButton]="fileList.length < 1"
-              [nzPreview]="handlePreview"
-              [nzBeforeUpload]="beforeUpload"
-            >
-              <div>
-                <div style="margin-top: 8px">Upload</div>
-              </div>
-            </nz-upload>
-            <nz-modal
-              [nzVisible]="previewVisible"
-              [nzContent]="modalContent"
-              [nzFooter]="null"
-              (nzOnCancel)="previewVisible = false"
-            >
-              <ng-template #modalContent>
-                <img [src]="previewImage" style="width: 100%" />
-              </ng-template>
-            </nz-modal>
+            <div class="upload-container">
+              <input
+                type="file"
+                accept="image/*"
+                (change)="onFileSelected($event)"
+                style="display: none"
+                #fileInput
+              />
+              <button nz-button (click)="fileInput.click()">
+                <i nz-icon nzType="upload"></i>
+                Upload Image
+              </button>
+              <span *ngIf="imageName" class="ml-2">{{ imageName }}</span>
+            </div>
+            <div *ngIf="imageUrl" class="mt-2">
+              <img [src]="imageUrl" style="max-width: 200px; max-height: 200px" />
+            </div>
           </nz-form-control>
-        </nz-form-item>
+        </nz-form-item>        
         <nz-form-item>
           <nz-form-label [nzSpan]="6">Price</nz-form-label>
           <nz-form-control [nzSpan]="16" nzErrorTip="Please input valid price">
