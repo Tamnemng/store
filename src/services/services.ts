@@ -55,12 +55,20 @@ export class Service {
 
   async getAllCategories() {
     const apiUrl = await this.ensureApiConfigured();
-    return this.http.get<Category[]>(`${apiUrl}categories`);
+    let url = `${apiUrl}categories`;
+    return this.http.get<Category[]>(url);
   }
 
-  async getProducts() {
-    const apiUrl = await this.ensureApiConfigured();
-    return this.http.get<Product[]>(`${apiUrl}products`);
+  async getProducts(category_id?: number) {
+    let apiUrl = await this.ensureApiConfigured();
+    if (category_id) {
+      apiUrl += `products?category=${category_id}`;
+    }
+    else {
+      apiUrl += 'products';
+    }
+    console.log(apiUrl);
+    return this.http.get<Product[]>(apiUrl);
   }
 
   private generateRandomId(): number {
@@ -81,8 +89,12 @@ export class Service {
 
   async updateProduct(product_id: number, category: number, updateValue: Product) {
     const apiUrl = await this.ensureApiConfigured();
+    const modifiedUpdateValue = {
+      ...updateValue,
+      image: Array.isArray(updateValue.image) ? updateValue.image[0] : updateValue.image
+    };
     const url = `${apiUrl}products/${product_id}?category=${category}`;
-    return this.http.put<createProduct>(url, updateValue);
+    return this.http.put<createProduct>(url, modifiedUpdateValue);
   }
 
   async getProduct(product_id: number, category: number) {
@@ -94,6 +106,6 @@ export class Service {
   async deleteProduct(product_id: number, category: number) {
     const apiUrl = await this.ensureApiConfigured();
     const url = `${apiUrl}products/${product_id}?category=${category}`;
-    return this.http.delete(url);
+    return firstValueFrom(this.http.delete(url));
   }
 }

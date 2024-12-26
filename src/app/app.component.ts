@@ -65,7 +65,8 @@ const NzModules = [
   NzTableModule,
   NzAvatarModule,
   HttpClientModule,
-  ReactiveFormsModule
+  ReactiveFormsModule,
+  FormsModule
 ];
 
 const categoryMapping: { [key: number]: number } = {
@@ -84,6 +85,7 @@ const categoryMapping: { [key: number]: number } = {
   providers: [Store, Service]
 })
 export class AppComponent implements OnInit {
+  selectedCategory: number = 0;
   isEdit: boolean = false;
   drawerVisible = false;
   categories$: Observable<Category[]>;
@@ -96,7 +98,6 @@ export class AppComponent implements OnInit {
   constructor(
     private store: Store,
     private fb: FormBuilder,
-    private service: Service,
     private message: NzMessageService
   ) {
     this.categories$ = this.store.categories$;
@@ -115,6 +116,19 @@ export class AppComponent implements OnInit {
       size: ['', [Validators.required]],
       category: ['', [Validators.required]]
     });
+  }
+
+  async applyFilter(): Promise<void> {
+    try {
+      if (this.selectedCategory === 0) {
+        await this.store.loadProducts();
+      } else {
+        await this.store.setFilter(this.selectedCategory);
+        await this.store.loadProducts();
+      }
+    } catch (error) {
+      this.message.error('Failed to apply filter');
+    }
   }
 
   openDrawer(): void {

@@ -7,6 +7,12 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   providedIn: 'root'
 })
 export class Store {
+  //filter cmm hieu
+  filter_id: number | undefined = undefined;
+  setFilter(id: number | undefined) {
+    this.filter_id = id;
+    this.loadProducts();
+  }
   // State
   private readonly _categories = new BehaviorSubject<Category[]>([]);
   readonly categories$ = this._categories.asObservable();
@@ -36,7 +42,6 @@ export class Store {
     try {
       this._categoriesLoading.next(true);
       this._error.next(null);
-      
       const response = await this.service.getAllCategories();
       const categories = await lastValueFrom(response);
       this._categories.next(categories);
@@ -51,8 +56,7 @@ export class Store {
     try {
       this._productsLoading.next(true);
       this._error.next(null);
-      
-      const response = await this.service.getProducts();
+      const response = await this.service.getProducts(this.filter_id);
       const products = await lastValueFrom(response);
       this._products.next(products);
     } catch (error) {
@@ -112,14 +116,12 @@ export class Store {
     try {
       this._productsLoading.next(true);
       this._error.next(null);
-      
       await this.service.deleteProduct(id, category);
-      // Reload products after deletion
       await this.loadProducts();
     } catch (error) {
       this.message.error(`Failed to delete product`);
     } finally {
-      this.message.success(`Create delete Successfully`);
+      this.message.success(`Delete Successfully`);
       this._productsLoading.next(false);
     }
   }
