@@ -123,7 +123,7 @@ export class AppComponent implements OnInit {
       if (this.selectedCategory === 0) {
         await this.store.loadProducts();
       } else {
-        await this.store.setFilter(this.selectedCategory);
+        await this.store.setFilter(this.selectedCategory === 0 ? undefined : this.selectedCategory);
         await this.store.loadProducts();
       }
     } catch (error) {
