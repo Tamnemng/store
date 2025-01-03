@@ -1,27 +1,45 @@
-# Store
+# Store Project
+Angular project template with Ant Design integration.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.2.
+## Prerequisites
+- Node.js (LTS version)
+- Angular CLI v18.2.2
+- Ant Design (antd) library
 
-## Development server
+## Installation
+```bash
+npm install
+or
+yarn add .\package.json
+```
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Development
+Start development server:
+run your development framework
+```bash
+ng serve
+or
+yarn start
+or
+npm run
+```
+Access at http://localhost:4200
 
-## Code scaffolding
+## Project Structure
+The project uses:
+- Angular v18.2.2 for framework
+- Ant Design for UI components
+- Karma for unit testing
+- Protractor for e2e testing
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Available Commands
+- `ng serve` - Start dev server
+- `ng generate component [name]` - Generate new component
+- `ng build` - Build project to dist/
+- `ng test` - Run unit tests
+- `ng e2e` - Run e2e tests
 
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Additional Resources
+- [Angular Documentation](https://angular.dev)
+- [Ant Design for Angular](https://ng.ant.design/docs/introduce/en)
+- [Angular CLI Documentation](https://angular.dev/tools/cli)
